@@ -22,7 +22,7 @@ public static class SheepGenerator
 
 			Physics.Raycast(new Vector3(newSheepPosition.x, 100.0f, newSheepPosition.y), Vector3.down, out hit);
 
-			float sheepPlacementHeight = 100.0f - hit.distance + 0.3f;
+			float sheepPlacementHeight = 100.0f - hit.distance + 2.5f;
 
 			newSheep.transform.position = new Vector3(newSheepPosition.x, sheepPlacementHeight, newSheepPosition.y);
 
@@ -36,7 +36,7 @@ public static class SheepGenerator
 public static class SheepGeneratorSettings
 {
 	public static int seed = 0;
-	public static int sheepCountMin = 200;
-	public static int sheepCountMax = 300;
+	public static int sheepCountMin = 300;
+	public static int sheepCountMax = 1200;
 	public static int sheepDistanceOnAxisMax = 50;
 }
