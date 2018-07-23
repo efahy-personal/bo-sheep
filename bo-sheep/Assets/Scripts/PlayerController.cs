@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 
@@ -49,12 +50,7 @@ public class PlayerController : MonoBehaviour {
 		SetTimeRemainingText();
 
 		if (GlobalVariables.timeRemaining == 0.0f) {
-			// Last two parameters mean the animation speed is damped
-			animator.SetFloat ("SpeedPercent", 0.0f);
-
-			Move (Vector2.zero, false);
-
-			return;
+			GameOver();
 		}
 
 		// 2. User Input Section
@@ -166,5 +162,11 @@ public class PlayerController : MonoBehaviour {
 
 	void SetTimeRemainingText() {
 		timeRemainingText.text = "Time left: " + GlobalVariables.timeRemaining.ToString();
+	}
+
+	public void GameOver() {
+		SceneManager.LoadScene(GlobalVariables.SCENE_INDEX_MAIN_MENU);
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
 	}
 }

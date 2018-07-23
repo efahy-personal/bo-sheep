@@ -74,6 +74,8 @@
      <Compile Include="Assets\Scripts\PhysicsScatteringSimulation.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\PlayerMovementOrig.cs" />
+     <Compile Include="Assets\Scripts\Quitter.cs" />
+     <Compile Include="Assets\Scripts\SceneLoader.cs" />
      <Compile Include="Assets\Scripts\Sheep\SheepGenerator.cs" />
      <Compile Include="Assets\Scripts\ThirdPersonCameraController.cs" />
      <None Include="Assets\Scripts\Landmass Generation\Terrain.shader" />
