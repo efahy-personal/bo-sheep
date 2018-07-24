@@ -5,15 +5,12 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
-
 	public float walkSpeed = 2f;
 	public float runSpeed = 6f;
 	public float gravity = -12;
 	public float jumpHeight = 1.0f;
 	[Range(0,1)]
 	public float airControlPercent;
-	public Text scoreText;
-	public Text timeRemainingText;
 
 	// Variables for smoothing and damping turn rate towards desired direction
 	public float turnSmoothTime = 0.2f;
@@ -25,6 +22,9 @@ public class PlayerController : MonoBehaviour {
 	float currentSpeed;
 	float velocityY;
 
+	public GameObject gameLogic;
+	GameController gameController;
+
 	Animator animator;
 	Transform cameraTransform;
 
@@ -35,24 +35,11 @@ public class PlayerController : MonoBehaviour {
 		animator = GetComponent<Animator> ();
 		cameraTransform = Camera.main.transform;
 		controller = GetComponent<CharacterController> ();
-		SetScoreText();
-		SetTimeRemainingText();
+		gameController = gameLogic.GetComponent<GameController>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		// 1. Calculate remaining time and update on screen
-		GlobalVariables.timeRemaining = GlobalVariables.GAME_TIME_IN_SECONDS - Time.time;
-		if (GlobalVariables.timeRemaining < 0) {
-			GlobalVariables.timeRemaining = 0.0f;
-		}
-
-		SetTimeRemainingText();
-
-		if (GlobalVariables.timeRemaining == 0.0f) {
-			GameOver();
-		}
-
 		// 2. User Input Section
 		Vector2 input = new Vector2 (Input.GetAxisRaw ("Horizontal"), Input.GetAxisRaw ("Vertical"));
 
@@ -146,27 +133,10 @@ public class PlayerController : MonoBehaviour {
 		{
 			// What's triggered and got us in here is a child of the dummy sheep object, which is
 			// not rendered and is only there for the triggering.  We need the child because the
-			// main dummy cheep object has full collision on so the sheep doesn't fall through the
-			// ground.  Also not that sheep layer (sheep layer) and player layer (default layer)
+			// main dummy sheep object has full collision on so the sheep doesn't fall through the
+			// ground.  Also note that sheep layer (sheep layer) and player layer (default layer)
 			// are set not to collide in physics settings
-			Destroy(triggerCollider.gameObject.transform.parent.gameObject);
-
-			GlobalVariables.score++;
-			SetScoreText();
+			gameController.SheepCaught(triggerCollider.gameObject.transform.parent.gameObject);
 		}
     }
-
-	void SetScoreText() {
-		scoreText.text = "Sheep collected: " + GlobalVariables.score.ToString();
-	}
-
-	void SetTimeRemainingText() {
-		timeRemainingText.text = "Time left: " + GlobalVariables.timeRemaining.ToString();
-	}
-
-	public void GameOver() {
-		SceneManager.LoadScene(GlobalVariables.SCENE_INDEX_MAIN_MENU);
-		Cursor.lockState = CursorLockMode.None;
-		Cursor.visible = true;
-	}
 }
