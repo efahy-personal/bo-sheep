@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameController : MonoBehaviour {
 	public GameObject sheepPrefab;
@@ -8,6 +9,7 @@ public class GameController : MonoBehaviour {
 
 	public Text scoreText;
 	public Text timeRemainingText;
+	public Text gameOverText;
 
 	// Private variables
 	GlobalVariables globalVariables;
@@ -55,12 +57,22 @@ public class GameController : MonoBehaviour {
 		globalVariables.score = 0;
 		gameStartTime = Time.time;
 
+		gameOverText.enabled = false;
 		SetScoreText();
 		SetTimeRemainingText();
 	}
 
 	private void GameOver()
 	{
+		gameOverText.enabled = true;
+
+		StartCoroutine(GameOverDisplay());
+	}
+
+	IEnumerator GameOverDisplay()
+	{
+		yield return new WaitForSeconds(GlobalVariables.GAME_OVER_DISPLAY_TIME_IN_SECONDS);
+
 		SceneManager.LoadScene(GlobalVariables.SCENE_INDEX_MAIN_MENU);
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
