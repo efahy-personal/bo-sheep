@@ -13,6 +13,8 @@ echo "Attempting to build $project, WebGL target"
   -logFile $(pwd)/unity.log \
   -projectPath $(pwd)/bo-sheep \
   -buildTarget WebGL \
+  -username eugene@bective.plus.com \
+  -password ${UNITY_PASSWORD} \
   -quit
 
 ls -lR $(pwd)
