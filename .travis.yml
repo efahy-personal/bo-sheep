@@ -12,4 +12,4 @@ script:
   # Work around travis problem with shell-session-update on OSX
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then unset -f cd; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then shell_session_update() { :; }; fi
-    - ./scripts/build.sh
+  - ./scripts/build.sh
