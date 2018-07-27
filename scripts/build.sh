@@ -17,7 +17,5 @@ echo "Attempting to build $project, WebGL target"
   -password ${UNITY_PASSWORD} \
   -quit
 
-ls -lR $(pwd)
-
 echo 'Logs from build'
 cat $(pwd)/unity.log | grep -v password
