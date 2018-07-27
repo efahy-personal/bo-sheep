@@ -41,3 +41,4 @@ Corridor/Library/metadata/
 # ================ #
 /builds/
 **/*~
+**/*.log

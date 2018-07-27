@@ -11,7 +11,7 @@ echo "Attempting to build $project, WebGL target"
   -nographics \
   -silent-crashes \
   -logFile $(pwd)/unity.log \
-  -projectPath $(pwd) \
+  -projectPath $(pwd)/bo-sheep \
   -buildTarget WebGL \
   -quit
 
