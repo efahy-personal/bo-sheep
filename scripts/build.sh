@@ -20,4 +20,4 @@ echo "Attempting to build $project, WebGL target"
 ls -lR $(pwd)
 
 echo 'Logs from build'
-cat $(pwd)/unity.log
+cat $(pwd)/unity.log | grep -v password
