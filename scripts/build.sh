@@ -5,20 +5,18 @@
 # Change this the name of your project. This will be the name of the final executables as well.
 # bo-sheep="ci-build"
 
+find $(pwd) 
+
 echo "Attempting to build $project, WebGL target"
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
   -batchmode \
-  -nographics \
   -silent-crashes \
   -logFile $(pwd)/unity.log \
   -projectPath $(pwd)/bo-sheep \
   -buildTarget WebGL \
   -username "eugene@bective.plus.com" \
-  -password "ThisIsATemporaryUnityPassword1234" \
+  -password "${UNITY_PASSWORD}" \
   -quit
-
-# ThisIsATemporaryUnityPassword1234
-# ${UNITY_PASSWORD}
 
 echo 'Logs from build'
 cat $(pwd)/unity.log # | grep -v password
