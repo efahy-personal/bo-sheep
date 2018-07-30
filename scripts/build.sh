@@ -14,9 +14,9 @@ echo "Attempting to build $project, WebGL target"
   -logFile $(pwd)/unity.log \
   -projectPath $(pwd)/bo-sheep \
   -buildTarget WebGL \
-  -username "eugene@bective.plus.com" \
+  -username 'eugene@bective.plus.com' \
   -password "${UNITY_PASSWORD}" \
   -quit
 
 echo 'Logs from build'
-cat $(pwd)/unity.log # | grep -v password
+cat $(pwd)/unity.log grep -v password
