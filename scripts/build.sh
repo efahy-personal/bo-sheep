@@ -13,17 +13,19 @@ find $(pwd) -name CACerts.pem
 echo "Looking for CACerts.pem (2) ..."
 find ~/Library -name CACerts.pem
 
-echo "activate license"
+echo "Activating license ..."
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
   -username 'eugene@bective.plus.com' \
   -password "${UNITY_PASSWORD}" \
-  -logfile $(pwd)/unity.log
+  -logfile $(pwd)/unity.log &
+
+UNITY_PID=$!
 
 echo"Sleeping while Unity hopefully generates some certificates ..."
 sleep 20
 
 echo "Terminating Unity ..."
-killall -9 /Applications/Unity/Unity.app/Contents/MacOS/Unity
+kill -9 ${UNITY_PID}
 
 echo "Looking for CACerts.pem (3) ..."
 find $(pwd) -name CACerts.pem
@@ -45,7 +47,6 @@ echo "Logs from build:"
 cat $(pwd)/unity.log grep -v password
 
 echo "Returning license ..."
-
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
   -quit \
   -batchmode \
