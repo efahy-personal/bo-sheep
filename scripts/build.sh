@@ -9,9 +9,7 @@ echo "ifconfig ..."
 ifconfig
 
 echo "Looking for CACerts.pem (1) ..."
-find $(pwd) -name CACerts.pem
-echo "Looking for CACerts.pem (2) ..."
-find ~/Library -name CACerts.pem
+find / -name CACerts.pem
 
 echo "Activating license ..."
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
@@ -21,18 +19,19 @@ echo "Activating license ..."
 
 UNITY_PID=$!
 
-echo"Sleeping while Unity hopefully generates some certificates ..."
-sleep 20
+echo "Sleeping while Unity hopefully generates some certificates ..."
+sleep 30
 
 echo "Terminating Unity ..."
 kill -9 ${UNITY_PID}
 
-echo "Looking for CACerts.pem (3) ..."
-find $(pwd) -name CACerts.pem
-echo "Looking for CACerts.pem (4) ..."
-find ~/Library -name CACerts.pem
+echo "Sleeping while Unity goes away ..."
+sleep 10
 
-echo "Attempting to build $project, WebGL target ..."
+echo "Looking for CACerts.pem (2) ..."
+find / -name CACerts.pem
+
+echo "Attempting to build WebGL target ..."
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
   -batchmode \
   -silent-crashes \
@@ -44,7 +43,7 @@ echo "Attempting to build $project, WebGL target ..."
   -quit
 
 echo "Logs from build:"
-cat $(pwd)/unity.log grep -v password
+cat $(pwd)/unity.log | grep -v password
 
 echo "Returning license ..."
 /Applications/Unity/Unity.app/Contents/MacOS/Unity \
