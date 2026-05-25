@@ -1,74 +1,206 @@
 fileFormatVersion: 2
 guid: 1d98d434f8bfe364db60caf741a7859f
 ModelImporter:
-  serializedVersion: 22
-  fileIDToRecycleName:
-    100000: Armature
-    100002: //RootNode
-    100004: Bo_Peep_000
-    100006: Chest
-    100008: Crook
-    100010: Fingers_L
-    100012: Fingers_R
-    100014: Foot_L
-    100016: Foot_R
-    100018: Hand_L
-    100020: Hand_R
-    100022: Head
-    100024: Leg_Pole_Target_L
-    100026: Leg_Pole_Target_R
-    100028: Lower_Arm_L
-    100030: Lower_Arm_R
-    100032: Lower_Leg_L
-    100034: Lower_Leg_R
-    100036: Neck
-    100038: Thumb_L
-    100040: Thumb_R
-    100042: Toes_L
-    100044: Toes_R
-    100046: Torso
-    100048: Upper_Arm_L
-    100050: Upper_Arm_R
-    100052: Upper_Leg_L
-    100054: Upper_Leg_R
-    400000: Armature
-    400002: //RootNode
-    400004: Bo_Peep_000
-    400006: Chest
-    400008: Crook
-    400010: Fingers_L
-    400012: Fingers_R
-    400014: Foot_L
-    400016: Foot_R
-    400018: Hand_L
-    400020: Hand_R
-    400022: Head
-    400024: Leg_Pole_Target_L
-    400026: Leg_Pole_Target_R
-    400028: Lower_Arm_L
-    400030: Lower_Arm_R
-    400032: Lower_Leg_L
-    400034: Lower_Leg_R
-    400036: Neck
-    400038: Thumb_L
-    400040: Thumb_R
-    400042: Toes_L
-    400044: Toes_R
-    400046: Torso
-    400048: Upper_Arm_L
-    400050: Upper_Arm_R
-    400052: Upper_Leg_L
-    400054: Upper_Leg_R
-    4300000: Bo_Peep_000
-    7400000: Default Take
-    7400002: Idle
-    7400004: Run
-    7400006: T-Pose
-    7400008: Walk_Blocking
-    7400010: Walk_Polish
-    9500000: //RootNode
-    13700000: Bo_Peep_000
-    2186277476908879412: ImportLogs
+  serializedVersion: 24200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Armature
+  - first:
+      1: 100002
+    second: //RootNode
+  - first:
+      1: 100004
+    second: Bo_Peep_000
+  - first:
+      1: 100006
+    second: Chest
+  - first:
+      1: 100008
+    second: Crook
+  - first:
+      1: 100010
+    second: Fingers_L
+  - first:
+      1: 100012
+    second: Fingers_R
+  - first:
+      1: 100014
+    second: Foot_L
+  - first:
+      1: 100016
+    second: Foot_R
+  - first:
+      1: 100018
+    second: Hand_L
+  - first:
+      1: 100020
+    second: Hand_R
+  - first:
+      1: 100022
+    second: Head
+  - first:
+      1: 100024
+    second: Leg_Pole_Target_L
+  - first:
+      1: 100026
+    second: Leg_Pole_Target_R
+  - first:
+      1: 100028
+    second: Lower_Arm_L
+  - first:
+      1: 100030
+    second: Lower_Arm_R
+  - first:
+      1: 100032
+    second: Lower_Leg_L
+  - first:
+      1: 100034
+    second: Lower_Leg_R
+  - first:
+      1: 100036
+    second: Neck
+  - first:
+      1: 100038
+    second: Thumb_L
+  - first:
+      1: 100040
+    second: Thumb_R
+  - first:
+      1: 100042
+    second: Toes_L
+  - first:
+      1: 100044
+    second: Toes_R
+  - first:
+      1: 100046
+    second: Torso
+  - first:
+      1: 100048
+    second: Upper_Arm_L
+  - first:
+      1: 100050
+    second: Upper_Arm_R
+  - first:
+      1: 100052
+    second: Upper_Leg_L
+  - first:
+      1: 100054
+    second: Upper_Leg_R
+  - first:
+      4: 400000
+    second: Armature
+  - first:
+      4: 400002
+    second: //RootNode
+  - first:
+      4: 400004
+    second: Bo_Peep_000
+  - first:
+      4: 400006
+    second: Chest
+  - first:
+      4: 400008
+    second: Crook
+  - first:
+      4: 400010
+    second: Fingers_L
+  - first:
+      4: 400012
+    second: Fingers_R
+  - first:
+      4: 400014
+    second: Foot_L
+  - first:
+      4: 400016
+    second: Foot_R
+  - first:
+      4: 400018
+    second: Hand_L
+  - first:
+      4: 400020
+    second: Hand_R
+  - first:
+      4: 400022
+    second: Head
+  - first:
+      4: 400024
+    second: Leg_Pole_Target_L
+  - first:
+      4: 400026
+    second: Leg_Pole_Target_R
+  - first:
+      4: 400028
+    second: Lower_Arm_L
+  - first:
+      4: 400030
+    second: Lower_Arm_R
+  - first:
+      4: 400032
+    second: Lower_Leg_L
+  - first:
+      4: 400034
+    second: Lower_Leg_R
+  - first:
+      4: 400036
+    second: Neck
+  - first:
+      4: 400038
+    second: Thumb_L
+  - first:
+      4: 400040
+    second: Thumb_R
+  - first:
+      4: 400042
+    second: Toes_L
+  - first:
+      4: 400044
+    second: Toes_R
+  - first:
+      4: 400046
+    second: Torso
+  - first:
+      4: 400048
+    second: Upper_Arm_L
+  - first:
+      4: 400050
+    second: Upper_Arm_R
+  - first:
+      4: 400052
+    second: Upper_Leg_L
+  - first:
+      4: 400054
+    second: Upper_Leg_R
+  - first:
+      43: 4300000
+    second: Bo_Peep_000
+  - first:
+      74: 7400000
+    second: Default Take
+  - first:
+      74: 7400002
+    second: Idle
+  - first:
+      74: 7400004
+    second: Run
+  - first:
+      74: 7400006
+    second: T-Pose
+  - first:
+      74: 7400008
+    second: Walk_Blocking
+  - first:
+      74: 7400010
+    second: Walk_Polish
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Bo_Peep_000
+  - first:
+      41386430: 2186277476908879412
+    second: ImportLogs
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -81,40 +213,19 @@ ModelImporter:
       name: None__Crook_Texture_psd
     second: {fileID: 2100000, guid: dfc9a334308a8bc4e9ffacdd432fc410, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
-    materialLocation: 0
+    materialLocation: 1
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: <Root Transform>
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
-    animationImportWarnings: "\nClip 'Run' has import animation warnings that might
-      lower retargeting quality:\n\t'Upper_Leg_L' has scale animation that will be
-      discarded.\n\t'Lower_Leg_L' has scale animation that will be discarded.\n\t'Foot_L'
-      has scale animation that will be discarded.\n\t'Toes_L' has scale animation
-      that will be discarded.\n\t'Upper_Leg_R' has scale animation that will be discarded.\n\t'Lower_Leg_R'
-      has scale animation that will be discarded.\n\t'Foot_R' has scale animation
-      that will be discarded.\n\t'Toes_R' has scale animation that will be discarded.\n\nClip
-      'Walk_Blocking' has import animation warnings that might lower retargeting quality:\n\t'Upper_Leg_L'
-      has scale animation that will be discarded.\n\t'Lower_Leg_L' has scale animation
-      that will be discarded.\n\t'Foot_L' has scale animation that will be discarded.\n\t'Toes_L'
-      has scale animation that will be discarded.\n\t'Upper_Leg_R' has scale animation
-      that will be discarded.\n\t'Lower_Leg_R' has scale animation that will be discarded.\n\t'Foot_R'
-      has scale animation that will be discarded.\n\t'Toes_R' has scale animation
-      that will be discarded.\n\nClip 'Walk_Polish' has import animation warnings
-      that might lower retargeting quality:\n\t'Crook' has translation animation that
-      will be discarded.\n\t'Upper_Leg_L' has scale animation that will be discarded.\n\t'Lower_Leg_L'
-      has scale animation that will be discarded.\n\t'Foot_L' has scale animation
-      that will be discarded.\n\t'Toes_L' has scale animation that will be discarded.\n\t'Upper_Leg_R'
-      has scale animation that will be discarded.\n\t'Lower_Leg_R' has scale animation
-      that will be discarded.\n\t'Foot_R' has scale animation that will be discarded.\n\t'Toes_R'
-      has scale animation that will be discarded.\n"
+    animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -130,6 +241,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Default Take
       takeName: Default Take
+      internalID: 0
       firstFrame: 0
       lastFrame: 99
       wrapMode: 0
@@ -158,6 +270,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Idle
       takeName: Idle
+      internalID: 0
       firstFrame: 0
       lastFrame: 99
       wrapMode: 0
@@ -186,6 +299,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Run
       takeName: Run
+      internalID: 0
       firstFrame: 0
       lastFrame: 40
       wrapMode: 0
@@ -214,6 +328,7 @@ ModelImporter:
     - serializedVersion: 16
       name: T-Pose
       takeName: T-Pose
+      internalID: 0
       firstFrame: 0
       lastFrame: 1
       wrapMode: 0
@@ -242,6 +357,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Walk_Blocking
       takeName: Walk_Blocking
+      internalID: 0
       firstFrame: 0
       lastFrame: 32
       wrapMode: 0
@@ -270,6 +386,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Walk_Polish
       takeName: Walk_Polish
+      internalID: 0
       firstFrame: 0
       lastFrame: 97
       wrapMode: 0
@@ -301,32 +418,52 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
     indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human:
     - boneName: Torso
       humanName: Hips
@@ -644,14 +781,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 1
     hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 3
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

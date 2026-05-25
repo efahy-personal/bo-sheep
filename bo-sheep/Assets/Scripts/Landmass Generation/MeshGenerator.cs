@@ -74,8 +74,19 @@ public static class MeshGenerator{
 						int distanceToMainVertexB = skipIncrement - distanceToMainVertexA;
 						float distancePercentFromAToB = distanceToMainVertexA / (float)skipIncrement;
 
-						float heightMainVertexA = heightMap [(isVertical ? x : x - distanceToMainVertexA), (isVertical ? y - distanceToMainVertexA : y)];
-						float heightMainVertexB = heightMap [(isVertical ? x : x + distanceToMainVertexB), (isVertical ? y + distanceToMainVertexB : y)];
+						int xA = (isVertical ? x : x - distanceToMainVertexA);
+						int yA = (isVertical ? y - distanceToMainVertexA : y);
+						int xB = (isVertical ? x : x + distanceToMainVertexB);
+						int yB = (isVertical ? y + distanceToMainVertexB : y);
+
+						// Bounds checking to prevent silent thread crashes
+						xA = Mathf.Clamp(xA, 0, heightMap.GetLength(0) - 1);
+						yA = Mathf.Clamp(yA, 0, heightMap.GetLength(1) - 1);
+						xB = Mathf.Clamp(xB, 0, heightMap.GetLength(0) - 1);
+						yB = Mathf.Clamp(yB, 0, heightMap.GetLength(1) - 1);
+
+						float heightMainVertexA = heightMap [xA, yA];
+						float heightMainVertexB = heightMap [xB, yB];
 
 						height = heightMainVertexA * (1 - distancePercentFromAToB) + heightMainVertexB * distancePercentFromAToB;
 					}

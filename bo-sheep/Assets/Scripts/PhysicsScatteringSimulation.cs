@@ -19,7 +19,7 @@ public class PhysicsScatteringSimulation : MonoBehaviour
 	{
 		AutoGenerateComponents();
 
-		simulatedBodies = FindObjectsOfType<Rigidbody>().Select(rb => new SimulatedBody(rb, rb.transform.IsChildOf(transform))).ToArray();
+		simulatedBodies = FindObjectsByType<Rigidbody>(FindObjectsInactive.Exclude).Select(rb => new SimulatedBody(rb, rb.transform.IsChildOf(transform))).ToArray();
 
 		foreach (SimulatedBody body in simulatedBodies)
 		{
@@ -32,8 +32,10 @@ public class PhysicsScatteringSimulation : MonoBehaviour
 				body.rigidbody.AddForce(forceDirection * randomForceAmount, ForceMode.Impulse);
 			}
 		}
+
+		SimulationMode orig = Physics.simulationMode;
 		
-		Physics.autoSimulation = false;
+		Physics.simulationMode = SimulationMode.Script;
 
 		for (int i = 0; i < maxIterations; i++) {
 			Physics.Simulate (Time.fixedDeltaTime);
@@ -45,7 +47,7 @@ public class PhysicsScatteringSimulation : MonoBehaviour
 			}
 		}
 
-		Physics.autoSimulation = true;
+		Physics.simulationMode = orig;
 
 		foreach (SimulatedBody body in simulatedBodies)
 		{
@@ -136,7 +138,7 @@ public class PhysicsScatteringSimulation : MonoBehaviour
 
 			if (rigidbody != null)
 			{
-				rigidbody.velocity = Vector3.zero;
+				rigidbody.linearVelocity = Vector3.zero;
 				rigidbody.angularVelocity = Vector3.zero;
 			}
 		}

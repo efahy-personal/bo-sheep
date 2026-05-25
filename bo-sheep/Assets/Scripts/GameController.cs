@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,22 +9,27 @@ public class GameController : MonoBehaviour {
 
 	// Private variables
 	bool sheepGenerated = false;
+	TerrainGenerator terrainGenerator;
 
 	// Use this for initialization
 	void Start () {
-		
+		terrainGenerator = FindAnyObjectByType<TerrainGenerator>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		// Only generate sheep once, and only generate them after some time has elapsed since
-		// the game started to allow the terrain to have generated.  This is because we trace
-		// a ray into the ground to see what height the ground is so the sheep drops from just
-		// above it
-		if (!sheepGenerated && Time.time > GlobalVariables.TIME_FOR_FIRST_TERRAIN_GENERATION_IN_SECONDS) {
-			SheepGenerator.GenerateSheep(sheepPrefab, sheepContainer);
+		// Only generate sheep once, and only generate them after the terrain has generated
+		// its colliders at the spawn center. This ensures that the raycasts used to place
+		// sheep on the ground hit the terrain collider properly instead of falling through.
+		if (!sheepGenerated) {
+			if (terrainGenerator == null) {
+				terrainGenerator = FindAnyObjectByType<TerrainGenerator>();
+			}
 
-			sheepGenerated = true;
+			if (terrainGenerator != null && terrainGenerator.IsTerrainReadyAt(Vector3.zero)) {
+				SheepGenerator.GenerateSheep(sheepPrefab, sheepContainer);
+				sheepGenerated = true;
+			}
 		}
 	}
 }
