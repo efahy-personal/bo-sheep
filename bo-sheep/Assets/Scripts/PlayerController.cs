@@ -1,7 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerController : MonoBehaviour {
 
@@ -11,8 +12,10 @@ public class PlayerController : MonoBehaviour {
 	public float jumpHeight = 1.0f;
 	[Range(0,1)]
 	public float airControlPercent;
-	public Text scoreText;
-	public Text timeRemainingText;
+	public float walkAnimSpeed = 1.3f;
+	public float runAnimSpeed = 1.5f;
+	public TextMeshProUGUI scoreText;
+	public TextMeshProUGUI timeRemainingText;
 
 	// Variables for smoothing and damping turn rate towards desired direction
 	public float turnSmoothTime = 0.2f;
@@ -24,6 +27,13 @@ public class PlayerController : MonoBehaviour {
 	float currentSpeed;
 	float velocityY;
 
+	public bool enableTimer = true;
+	bool terrainReady = false;    // Phase 0→1: terrain collider confirmed at player position
+	bool isInitialized = false;   // Phase 1→2: CharacterController first grounded
+	public bool IsReady => isInitialized;
+	TerrainGenerator terrainGenerator;
+	Renderer[] playerRenderers;
+
 	Animator animator;
 	Transform cameraTransform;
 
@@ -32,29 +42,95 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		animator = GetComponent<Animator> ();
-		cameraTransform = Camera.main.transform;
+		if (animator == null) {
+			animator = GetComponentInChildren<Animator> ();
+			Debug.Log($"[PlayerController] Animator: GetComponent on self was null. GetComponentInChildren found: {(animator != null ? animator.gameObject.name : "null")}");
+		} else {
+			Debug.Log($"[PlayerController] Animator found on self.");
+		}
+
+		if (animator != null) {
+			Debug.Log($"[PlayerController] Animator details -> GameObject: '{animator.gameObject.name}', " +
+					  $"Controller: {(animator.runtimeAnimatorController != null ? animator.runtimeAnimatorController.name : "null")}, " +
+					  $"Avatar: {(animator.avatar != null ? animator.avatar.name : "null")}");
+		} else {
+			Debug.LogError("[PlayerController] Animator component is completely missing on player and all children!");
+		}
+
+		cameraTransform = Camera.main != null ? Camera.main.transform : null;
 		controller = GetComponent<CharacterController> ();
+		terrainGenerator = FindAnyObjectByType<TerrainGenerator>();
 		SetScoreText();
 		SetTimeRemainingText();
+
+		// Hide the player until the terrain is ready and we've snapped to the
+		// correct ground height. This prevents a visible drop/teleport on startup.
+		playerRenderers = GetComponentsInChildren<Renderer>();
+		foreach (Renderer r in playerRenderers) {
+			r.enabled = false;
+		}
+		Debug.Log($"[PlayerController] Start: position={transform.position}, hiding {playerRenderers.Length} renderers. Waiting for terrain...");
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		// 1. Calculate remaining time and update on screen
-		GlobalVariables.timeRemaining = GlobalVariables.GAME_TIME_IN_SECONDS - Time.time;
-		if (GlobalVariables.timeRemaining < 0) {
-			GlobalVariables.timeRemaining = 0.0f;
+
+		// ── Phase 0: wait for the terrain collider to be ready at our position ──
+		if (!terrainReady) {
+			if (terrainGenerator == null) {
+				terrainGenerator = FindAnyObjectByType<TerrainGenerator>();
+			}
+			if (terrainGenerator != null && terrainGenerator.IsTerrainReadyAt(transform.position)) {
+				terrainReady = true;
+				velocityY = 0;
+				Debug.Log($"[PlayerController] Terrain ready! Releasing player to settle. Y={transform.position.y:F3}");
+			} else {
+				return; // Still waiting – keep everything frozen
+			}
 		}
 
-		SetTimeRemainingText();
-
-		if (GlobalVariables.timeRemaining == 0.0f) {
-			// Last two parameters mean the animation speed is damped
-			animator.SetFloat ("SpeedPercent", 0.0f);
-
-			Move (Vector2.zero, false);
-
+		// ── Phase 1: terrain ready but not yet grounded ─────────────────────────
+		// Let the CharacterController fall naturally under gravity (player still
+		// invisible). This replicates the original game's settling behaviour and
+		// lets the CharacterController find its own correct grounded height –
+		// the same position the game always landed on before our changes.
+		if (!isInitialized) {
+			Move(Vector2.zero, false);
+			if (controller.isGrounded) {
+				isInitialized = true;
+				foreach (Renderer r in playerRenderers) {
+					r.enabled = true;
+				}
+				Debug.Log($"[PlayerController] Grounded and revealed at Y={transform.position.y:F3}");
+			}
 			return;
+		}
+
+		if (cameraTransform == null && Camera.main != null) {
+			cameraTransform = Camera.main.transform;
+		}
+
+		// 1. Calculate remaining time and update on screen
+		if (enableTimer) {
+			GlobalVariables.timeRemaining = GlobalVariables.GAME_TIME_IN_SECONDS - Time.time;
+			if (GlobalVariables.timeRemaining < 0) {
+				GlobalVariables.timeRemaining = 0.0f;
+			}
+
+			SetTimeRemainingText();
+
+			if (GlobalVariables.timeRemaining == 0.0f) {
+				// Last two parameters mean the animation speed is damped
+				animator.SetFloat ("SpeedPercent", 0.0f);
+
+				Move (Vector2.zero, false);
+
+				return;
+			}
+		} else {
+			if (timeRemainingText != null) {
+				timeRemainingText.text = "Timer Disabled";
+			}
 		}
 
 		// 2. User Input Section
@@ -77,7 +153,10 @@ public class PlayerController : MonoBehaviour {
 		float animationSpeedPercent = (isRunning ? currentSpeed / runSpeed : currentSpeed / walkSpeed * 0.5f) * inputDirection.magnitude;
 
 		// Last two parameters mean the animation speed is damped
-		animator.SetFloat ("SpeedPercent", animationSpeedPercent, speedSmoothTime, Time.deltaTime);
+		if (animator != null) {
+			animator.SetFloat ("SpeedPercent", animationSpeedPercent, speedSmoothTime, Time.deltaTime);
+			animator.speed = currentSpeed > 0.1f ? (isRunning ? runAnimSpeed : walkAnimSpeed) : 1.0f;
+		}
 	}
 
 	void Move (Vector2 inputDirection, bool isRunning) {
@@ -96,7 +175,7 @@ public class PlayerController : MonoBehaviour {
 
 		currentSpeed = Mathf.SmoothDamp (currentSpeed, targetSpeed, ref speedSmoothVelocity, GetModifiedSmoothTime(speedSmoothTime));
 
-		// Calculate veritcal speed resulting from gravity
+		// Calculate vertical speed resulting from gravity
 		velocityY += Time.deltaTime * gravity;
 
 		// Move the player
@@ -104,11 +183,9 @@ public class PlayerController : MonoBehaviour {
 
 		controller.Move (velocity * Time.deltaTime);
 
-		// Update the current speed to what the character controller is reporting,
-		// because it knows about collisions and will set the speed correctly based
-		// on whether we've collided with something.  Then we use the updated current
-		// speed below to set the animation speed
-		currentSpeed = new Vector2 (controller.velocity.x, controller.velocity.z).magnitude;
+		// Update the current speed for animation logic (using the desired currentSpeed calculated above)
+		// We'll skip overwriting with controller.velocity.magnitude for now to ensure animation plays
+		// even if the character controller is having trouble reporting velocity
 
 		// If we're on the ground, vertical speed from gravity is zero
 		if (controller.isGrounded) {
@@ -160,11 +237,52 @@ public class PlayerController : MonoBehaviour {
 		}
     }
 
+	void SnapToGround() {
+		// Cast a ray from well above the player downwards to find the exact terrain height.
+		RaycastHit hit;
+		Vector3 rayOrigin = new Vector3(transform.position.x, 500.0f, transform.position.z);
+
+		Debug.Log($"[PlayerController] SnapToGround: player at Y={transform.position.y:F3}. " +
+				  $"CC height={controller.height:F3}, center.y={controller.center.y:F3}, skinWidth={controller.skinWidth:F3}");
+
+		// Layer 8 is ground. Floor is standard floor layer.
+		if (Physics.Raycast(rayOrigin, Vector3.down, out hit, 1000.0f, (1 << 8) | LayerMask.GetMask("Floor"))) {
+			float groundHeight = hit.point.y;
+
+			// The CharacterController capsule bottom is at:
+			//   transform.position.y + controller.center.y - controller.height/2
+			// We want that bottom to be at groundHeight + skinWidth*0.5 (inside grounding range).
+			// Rearranging: targetY = groundHeight + height/2 - center.y + skinWidth*0.5
+			float targetY = groundHeight + controller.height / 2.0f - controller.center.y + controller.skinWidth * 0.5f;
+			float capsuleBottom = targetY + controller.center.y - controller.height / 2.0f;
+
+			Debug.Log($"[PlayerController] SnapToGround HIT terrain Y={groundHeight:F3}. " +
+					  $"Moving player: Y={transform.position.y:F3} -> Y={targetY:F3}. " +
+					  $"Capsule bottom will be at Y={capsuleBottom:F3} (gap from terrain: {capsuleBottom - groundHeight:F3})");
+
+			bool wasEnabled = controller.enabled;
+			controller.enabled = false;
+			transform.position = new Vector3(transform.position.x, targetY, transform.position.z);
+			controller.enabled = wasEnabled;
+			velocityY = 0;
+		} else {
+			Debug.LogWarning($"[PlayerController] SnapToGround MISS — no Ground/Floor collider found from Y=500 at X={transform.position.x:F2}, Z={transform.position.z:F2}!");
+		}
+	}
+
 	void SetScoreText() {
-		scoreText.text = "Sheep collected: " + GlobalVariables.score.ToString();
+		if (scoreText != null) {
+			scoreText.text = "Sheep collected: " + GlobalVariables.score.ToString();
+		}
 	}
 
 	void SetTimeRemainingText() {
-		timeRemainingText.text = "Time left: " + GlobalVariables.timeRemaining.ToString();
+		if (timeRemainingText != null) {
+			if (enableTimer) {
+				timeRemainingText.text = "Time left: " + GlobalVariables.timeRemaining.ToString("F1");
+			} else {
+				timeRemainingText.text = "Timer Disabled";
+			}
+		}
 	}
 }

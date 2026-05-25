@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
@@ -43,11 +43,22 @@ public class TerrainGenerator : MonoBehaviour {
 		UpdateVisibleChunks ();
 	}
 
+	Vector2 viewerPositionAtLastColliderUpdate;
+	const float viewerMoveThresholdForColliderUpdate = 1.5f;
+	const float sqrViewerMoveThresholdForColliderUpdate = viewerMoveThresholdForColliderUpdate * viewerMoveThresholdForColliderUpdate;
+
 	void Update() {
+		if (viewer == null) {
+			GameObject player = GameObject.FindWithTag("Player");
+			if (player != null) viewer = player.transform;
+			else return;
+		}
+
 		viewerPosition = new Vector2 (viewer.position.x, viewer.position.z);
 
-		// If the player has moved since last frame
-		if (viewerPosition != viewerPositionAtLastChunkUpdate) {
+		// If the player has moved significantly since last collider update
+		if ((viewerPositionAtLastColliderUpdate - viewerPosition).sqrMagnitude > sqrViewerMoveThresholdForColliderUpdate) {
+			viewerPositionAtLastColliderUpdate = viewerPosition;
 			foreach (TerrainChunk chunk in visibleTerrainChunks) {
 				chunk.UpdateCollisionMesh ();
 			}
@@ -56,6 +67,10 @@ public class TerrainGenerator : MonoBehaviour {
 		if ((viewerPositionAtLastChunkUpdate - viewerPosition).sqrMagnitude > sqrViewerMoveThresholdForChunkUpdate) {
 			viewerPositionAtLastChunkUpdate = viewerPosition;
 			UpdateVisibleChunks ();
+
+			int currentChunkCoordX = Mathf.FloorToInt (viewerPosition.x / meshWorldSize);
+			int currentChunkCoordY = Mathf.FloorToInt (viewerPosition.y / meshWorldSize);
+			Debug.Log ($"[Terrain] Moved! Position: {viewerPosition} (Chunk: {currentChunkCoordX}, {currentChunkCoordY})");
 		}
 	}
 
@@ -71,8 +86,8 @@ public class TerrainGenerator : MonoBehaviour {
 		}
 
 		// Get the X and Y coordinates where the player/viewer currently is
-		int currentChunkCoordX = Mathf.RoundToInt (viewerPosition.x / meshWorldSize);
-		int currentChunkCoordY = Mathf.RoundToInt (viewerPosition.y / meshWorldSize);
+		int currentChunkCoordX = Mathf.FloorToInt (viewerPosition.x / meshWorldSize);
+		int currentChunkCoordY = Mathf.FloorToInt (viewerPosition.y / meshWorldSize);
 
 		for (int yOffset = -chunksVisibleInViewDistance; yOffset <= chunksVisibleInViewDistance; yOffset++) {
 			for (int xOffset = -chunksVisibleInViewDistance; xOffset <= chunksVisibleInViewDistance; xOffset++) {
@@ -99,6 +114,23 @@ public class TerrainGenerator : MonoBehaviour {
 		} else {
 			visibleTerrainChunks.Remove (chunk);
 		}
+	}
+
+	public bool IsTerrainReadyAt(Vector3 position) {
+		float worldSize = meshWorldSize;
+		if (worldSize == 0 && meshSettings != null) {
+			worldSize = meshSettings.meshWorldSize;
+		}
+		if (worldSize == 0) return false;
+
+		int chunkX = Mathf.FloorToInt (position.x / worldSize);
+		int chunkY = Mathf.FloorToInt (position.z / worldSize);
+		Vector2 chunkCoord = new Vector2 (chunkX, chunkY);
+
+		if (terrainChunkDictionary.TryGetValue (chunkCoord, out TerrainChunk chunk)) {
+			return chunk.HasSetCollider;
+		}
+		return false;
 	}
 }
 

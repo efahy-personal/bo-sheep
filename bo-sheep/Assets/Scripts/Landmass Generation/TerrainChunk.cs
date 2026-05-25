@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class TerrainChunk {
-	const float colliderGenerationDistanceThreshold = 5;
+	const float colliderGenerationDistanceThreshold = 100;
 
 	public event System.Action<TerrainChunk, bool> onVisisbilityChanged;
 	public Vector2 coordinate;
@@ -29,6 +29,7 @@ public class TerrainChunk {
 	int previousLODIndex = -1;
 
 	bool hasSetCollider;
+	public bool HasSetCollider => hasSetCollider;
 	float maxViewDistance;
 
 	HeightMapSettings heightMapSettings;
@@ -45,7 +46,8 @@ public class TerrainChunk {
 
 		sampleCentre = coordinate * meshSettings.meshWorldSize / meshSettings.meshScale;
 		Vector2 position = coordinate * meshSettings.meshWorldSize;
-		bounds = new Bounds (position, Vector2.one * meshSettings.meshWorldSize);
+		// The bounds center must match the meshObject world position (which is 'position')
+		bounds = new Bounds (new Vector3(position.x, 0, position.y), new Vector3(meshSettings.meshWorldSize, 2000, meshSettings.meshWorldSize));
 
 		meshObject = new GameObject("Terrain Chunk");
 		meshObject.name = "Terrain Chunk " + coordinate.ToString();
@@ -90,9 +92,9 @@ public class TerrainChunk {
 		UpdateTerrainChunk ();
 	}
 
-	Vector2 viewerPosition {
+	Vector3 viewerPosition {
 		get {
-			return new Vector2 (viewer.position.x, viewer.position.z);
+			return new Vector3 (viewer.position.x, 0, viewer.position.z);
 		}
 	}
 
@@ -135,6 +137,10 @@ public class TerrainChunk {
 			if (wasVisible != chunkVisible) {
 				SetVisible (chunkVisible);
 
+				if (chunkVisible) {
+					UpdateCollisionMesh ();
+				}
+
 				if (onVisisbilityChanged != null) {
 					onVisisbilityChanged (this, chunkVisible);
 				}
@@ -146,27 +152,33 @@ public class TerrainChunk {
 	// updated player position and based on that, create collision meshes in
 	// a timely manner
 	public void UpdateCollisionMesh() {
-		if (!hasSetCollider) {
+		if (!hasSetCollider && heightMapReceived) {
 			float sqrDistanceFromViewerToEdge = bounds.SqrDistance (viewerPosition);
 
-			if (sqrDistanceFromViewerToEdge < detailLevels [colliderLODIndex].sqrVisibleDistanceThreshold) {
+			// Request the mesh if we are within range
+			if (sqrDistanceFromViewerToEdge < colliderGenerationDistanceThreshold * colliderGenerationDistanceThreshold) {
 				if (!lodMeshes [colliderLODIndex].meshRequested) {
 					lodMeshes [colliderLODIndex].RequestMesh (heightMap, meshSettings);
+					Debug.Log ($"[Terrain] Requested collider for chunk {coordinate}");
 				}
 			}
 
-			// If the player is within the threshold distance to the adjacent chunk
-			if (sqrDistanceFromViewerToEdge < colliderGenerationDistanceThreshold * colliderGenerationDistanceThreshold) {
-				if (lodMeshes [colliderLODIndex].meshAvailable) {
-					meshCollider.sharedMesh = lodMeshes [colliderLODIndex].mesh;
-					hasSetCollider = true;
-				}
+			// If the mesh is available, set it as the collider. 
+			// We remove the distance check here because if the mesh is ready, we should use it!
+			if (lodMeshes [colliderLODIndex].meshAvailable) {
+				meshCollider.sharedMesh = lodMeshes [colliderLODIndex].mesh;
+				hasSetCollider = true;
+				meshObject.name += " [COLLIDER]";
+				Debug.Log ($"[Terrain] Successfully set collider for chunk {coordinate}!");
 			}
 		}
 	}
 
 	public void SetVisible(bool visible) {
 		meshObject.SetActive (visible);
+		if (!visible) {
+			Debug.Log ($"[Terrain] Deactivated chunk {coordinate}");
+		}
 	}
 
 	public bool IsVisible() {

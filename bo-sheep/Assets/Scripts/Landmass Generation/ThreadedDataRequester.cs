@@ -12,21 +12,29 @@ public class ThreadedDataRequester : MonoBehaviour {
 	Queue<ThreadInfo> dataQueue = new Queue<ThreadInfo>();
 
 	void Awake() {
-		instance = FindObjectOfType<ThreadedDataRequester> ();
+		if (instance == null) {
+			instance = this;
+		} else if (instance != this) {
+			Destroy(gameObject);
+		}
 	}
 
-	// Method for triggering generation of data in a separate thread. generateData
-	// is the method to call to generate the data and callback is what we'll call
-	// when the data has been generated but note that the callback can't be called
-	// from inside the thread as that callback would then also be executed in the
-	// thread and we can't have that because the callback is going to be doing
-	// stuff that Unity only wants done in the main thread.  So instead, when map
-	// data becomes available, the callback is put on a queue of callbacks and the
-	// main thread (in the form of the Update method) monitors the queue and calls
-	// any callbacks on it
 	public static void RequestData(Func<object> generateData, Action<object> callback) {
+		if (instance == null) {
+			Debug.LogError("[ThreadedDataRequester] Instance is null! Make sure there is a ThreadedDataRequester in the scene.");
+			return;
+		}
+
 		ThreadStart threadStart = delegate {
-			instance.DataThread (generateData, callback);
+			try {
+				instance.DataThread (generateData, callback);
+			} catch (Exception e) {
+				lock (instance.dataQueue) {
+					instance.dataQueue.Enqueue(new ThreadInfo((obj) => {
+						Debug.LogError($"[ThreadedDataRequester] Thread error: {e}");
+					}, null));
+				}
+			}
 		};
 
 		new Thread (threadStart).Start ();
@@ -43,12 +51,12 @@ public class ThreadedDataRequester : MonoBehaviour {
 	}
 
 	void Update() {
-		// If we've any HeightMap callbacks queued up, execute them
-		if (dataQueue.Count > 0) {
-			for (int i = 0; i < dataQueue.Count; i++) {
-				ThreadInfo threadInfo = dataQueue.Dequeue ();
-
-				threadInfo.callback (threadInfo.parameter);
+		lock (dataQueue) {
+			if (dataQueue.Count > 0) {
+				while (dataQueue.Count > 0) {
+					ThreadInfo threadInfo = dataQueue.Dequeue ();
+					threadInfo.callback (threadInfo.parameter);
+				}
 			}
 		}
 	}
